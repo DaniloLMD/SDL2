@@ -1,11 +1,13 @@
 #include <iostream>
+#include <vector>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 using namespace std;
 
-
+#define SMALL_CACTUS 0 
+#define BIG_CACTUS 1
 
 //----------------------------------------------------//
 //----------------  VARIAVEIS GLOBAIS ----------------//
@@ -18,7 +20,7 @@ const char* SPRITES_FOLDER = "sprites/";
 
 bool quit = false; //booleano que controla o evento do botao de fechar o programa
 
-const double GRAVITY = 0.1; //força que puxa o dinossauro pra baixo
+const double GRAVITY = 0.05; //força que puxa o dinossauro pra baixo
 
 const int SCREEN_WIDTH = 800; //largura da janela principal em pixels
 const int SCREEN_HEIGHT = 400; //altura da janela principal em pixels
@@ -44,7 +46,9 @@ SDL_Texture* dinoTexture2 = NULL;
 
 SDL_Texture* groundTexture1 = NULL;
 SDL_Texture* groundTexture2 = NULL;
-SDL_Texture* groundTexture3 = NULL;
+SDL_Texture* ptera1Texture = NULL;
+SDL_Texture* ptera2Texture = NULL;
+
 
 
 //----------------  Variaveis do Dino ----------------//
@@ -54,7 +58,115 @@ int dinoY = GROUND_HEIGHT;
 double dinoYVelocity = 0.0;
 bool isJumping = false;
 
-const double JUMP_FORCE = 6.0; //força de subida do pulo
+const double JUMP_FORCE = 4.0; //força de subida do pulo
+
+
+
+//----------------------------------------------------//
+//----------------  Classes --------------------------//
+//----------------------------------------------------//
+
+class Cactus{
+    public:
+        Cactus(int type, int x, int speed);
+
+        void Update();
+        void Render();
+
+        SDL_Rect GetHitbox() const {return hitbox;}
+
+    private:
+        SDL_Texture *texture;
+        SDL_Rect hitbox;
+        int speed;
+};
+
+Cactus::Cactus(int type, int x, int speed) : speed(speed)
+{
+    string imagePath = SPRITES_FOLDER;
+    int width;
+
+    if(type == SMALL_CACTUS){
+        imagePath += string("cactus_small.png");
+        width = 45;
+    }   
+    else{
+        imagePath += string("cactus_big.png");
+        width = 65;
+    }
+    
+
+    SDL_Surface* surface = IMG_Load(imagePath.c_str());
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    SDL_FreeSurface(surface);
+
+    hitbox = {x, GROUND_HEIGHT, width, 44};
+}
+
+void Cactus::Update(){
+    hitbox.x -= speed;
+}
+
+void Cactus::Render(){
+    SDL_RenderCopy(renderer, texture, NULL, &hitbox);
+}
+
+vector<Cactus> cactuses;
+
+
+
+class Ptera{
+    public:
+        Ptera(int type, int x, int y, int speed);
+
+        void Update();
+        void Render();
+
+        SDL_Rect GetHitbox() const {return hitbox;}
+
+    private:
+        SDL_Texture *texture1;
+        SDL_Texture *texture2;
+        SDL_Rect hitbox;
+        int speed;
+        int cont = 0;
+};
+
+Ptera::Ptera(int type, int x, int y, int speed) : speed(speed)
+{
+    string imagePath1 = SPRITES_FOLDER + string("ptera_1.png");
+    string imagePath2 = SPRITES_FOLDER + string("ptera_2.png");
+    
+
+    SDL_Surface* surface1 = IMG_Load(imagePath1.c_str());
+    SDL_Surface* surface2 = IMG_Load(imagePath2.c_str());
+
+    texture1 = SDL_CreateTextureFromSurface(renderer, surface1);
+    texture2 = SDL_CreateTextureFromSurface(renderer, surface2);
+
+    SDL_FreeSurface(surface1);
+    SDL_FreeSurface(surface2);
+
+    hitbox = {x, y, 46, 40};
+}
+
+void Ptera::Update(){
+    hitbox.x -= speed;
+}
+
+void Ptera::Render(){
+    if(cont <= 50){
+        SDL_RenderCopy(renderer, texture1, NULL, &hitbox);
+    }
+    else if(cont <= 100)  {
+        SDL_RenderCopy(renderer, texture2, NULL, &hitbox);
+    }     
+    else cont = 0;   
+    cont++;
+}
+
+vector<Ptera> pteras;
 
 
 //----------------------------------------------------//
@@ -127,8 +239,7 @@ void UpdateGround(){
     //se o chao desaparecer da tela(coordenada X da ponta esquerda
     //menor que 0), voltar para a ponta do outro chao
     if(ground1X + groundImageWidth < 0){
-        //ground1X = SCREEN_WIDTH - groundImageWidth;
-        ground1X = ground2X + groundImageWidth;    
+        ground1X = ground2X + groundImageWidth; 
     }
     if(ground2X + groundImageWidth < 0){
         ground2X = ground1X + groundImageWidth;
@@ -165,7 +276,7 @@ bool LoadMedia(){
     dinoTexture1 = SDL_CreateTextureFromSurface(renderer, dinoSurface1);
     SDL_FreeSurface(dinoSurface1);
 
-//carregando o dinossauro 2
+    //carregando o dinossauro 2
     string dinoImagePath2 = SPRITES_FOLDER + string("dino_2.png");
     SDL_Surface* dinoSurface2 = IMG_Load(dinoImagePath2.c_str());
 
@@ -193,6 +304,28 @@ bool LoadMedia(){
 
     SDL_FreeSurface(groundSurface);
 
+
+    //carregando ptera1
+    string ptera1ImagePath = SPRITES_FOLDER + string("ptera_1.png"); 
+    SDL_Surface* ptera1Surface = IMG_Load(groundImagePath.c_str());
+    if(!ptera1Surface){
+        cout << "Problem loading ptera_1.png "<< IMG_GetError() << endl;
+        return false;
+    }
+    ptera1Texture = SDL_CreateTextureFromSurface(renderer, ptera1Surface);
+    SDL_FreeSurface(ptera1Surface);
+
+    //carregando ptera2
+    string ptera2ImagePath = SPRITES_FOLDER + string("ptera_2.png"); 
+    SDL_Surface* ptera2Surface = IMG_Load(groundImagePath.c_str());
+    if(!ptera2Surface){
+        cout << "Problem loading ptera_2.png "<< IMG_GetError() << endl;
+        return false;
+    }
+    ptera2Texture = SDL_CreateTextureFromSurface(renderer, ptera2Surface);
+    SDL_FreeSurface(ptera2Surface);
+
+
     return true;
 } 
 
@@ -211,6 +344,9 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
+    cactuses.push_back(Cactus(SMALL_CACTUS, 800, groundSpeed)); //small cactus
+    cactuses.push_back(Cactus(BIG_CACTUS, 1200, groundSpeed)); //big cactus
+
     ground2X = ground1X + groundImageWidth;
     while(!quit){ //loop for game loop
         while(SDL_PollEvent(&event) != 0){ //loop que aguarda algum evento
@@ -219,14 +355,27 @@ int main(int argc, char* argv[]){
             }
             else if(event.type == SDL_KEYDOWN){ //evento de qualquer tecla ser pressionada
                 //checa se a tela pressionada é a seta pra cima ou o espaco
-                {
                 if(event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_SPACE)
+                {
                     HandleJump();
                 }
             }
         }
 
-        SDL_RenderClear(renderer); //limpa o frame atual para carregar o proximo frame
+        //spawna pteras periodicamente
+        if(SDL_GetTicks() % 3000 == 0){
+            pteras.push_back(Ptera(rand() %2, SCREEN_WIDTH, rand()%100 + 100, groundSpeed));
+        }
+
+        for(int i = 0; i < pteras.size(); i++){
+            pteras[i].Update();
+        }
+
+        for(int i = 0; i < cactuses.size(); i++){
+            cactuses[i].Update();
+        }
+
+
 
         UpdateGround();
 
@@ -234,6 +383,7 @@ int main(int argc, char* argv[]){
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
+        SDL_RenderClear(renderer); //limpa o frame atual para carregar o proximo frame
         SDL_Rect dinoRect = {dinoX, dinoY, 44, 48};
         
         if(c <= 50)
@@ -251,10 +401,27 @@ int main(int argc, char* argv[]){
         SDL_Rect groundRect2 = {ground2X, GROUND_HEIGHT + 25, groundImageWidth, 40};
         SDL_RenderCopy(renderer, groundTexture2, NULL, &groundRect2);
 
+        for(int i = 0; i < cactuses.size(); i++){
+            cactuses[i].Render();
+            if(cactuses[i].GetHitbox().x + cactuses[i].GetHitbox().w < 0){
+                cactuses[i] = Cactus(rand()%2, SCREEN_WIDTH, groundSpeed);
+            }
+        }
+
+        for(int i = 0; i < pteras.size(); i++){
+            pteras[i].Render();
+            if(pteras[i].GetHitbox().x + pteras[i].GetHitbox().w < 0){
+                pteras.erase(pteras.begin() + i);
+            }
+        }
+        
+
         SDL_RenderPresent(renderer);
 
         SDL_Delay(3);
     }
+
+    printf("Tempo = %.2lfs\n", (double) SDL_GetTicks()/1000);
 
     SDL_Quit();
 

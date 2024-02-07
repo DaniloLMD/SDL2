@@ -5,7 +5,7 @@ all:
 	g++ $(NAME).cpp -o $(NAME) $(FLAGS)
 	./$(NAME)
 
+	
 aula:
-	rm aulaa
 	g++ aula.cpp -o aulaa $(FLAGS)
 	./aulaa

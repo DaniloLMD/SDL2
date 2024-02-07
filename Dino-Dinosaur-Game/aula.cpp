@@ -24,8 +24,6 @@ int groundSpeed = 2;
 int ground1X = 0;
 int ground2X = 0;
 
-
-
 SDL_Window *window = NULL;
 SDL_Renderer *renderer=NULL;
 
@@ -34,6 +32,51 @@ int dinoX = 100;
 int dinoY = SCREEN_HEIGHT - 48 - 40;
 double dinoYVelocity = 0.0;
 bool isJumping = false;
+
+// Cactus class
+class Cactus {
+public:
+    Cactus(int type, int x, int speed);
+
+    void Update();
+    void Render();
+
+    SDL_Rect GetHitbox() const { return hitbox; }
+
+private:
+    SDL_Texture* texture;
+    SDL_Rect hitbox;
+    int speed;
+};
+
+Cactus::Cactus(int type, int x, int speed) : speed(speed) {
+    std::string imagePath;
+    int width;
+
+    if (type == 0) { // Small cactus
+        imagePath = SPRITES_FOLDER + std::string("cactus_small.png");
+        width = 45;
+    } else { // Big cactus
+        imagePath = SPRITES_FOLDER + std::string("cactus_big.png");
+        width = 65;
+    }
+
+    SDL_Surface* surface = IMG_Load(imagePath.c_str());
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+
+    hitbox = { x, SCREEN_HEIGHT - 40 - 44, width, 44 };
+}
+
+void Cactus::Update() {
+    hitbox.x -= speed;
+}
+
+void Cactus::Render() {
+    SDL_RenderCopy(renderer, texture, NULL, &hitbox);
+}
+
+vector<Cactus> cactuses;
 
 bool InitializeSDL(){
 	
@@ -83,12 +126,6 @@ bool LoadMedia() {
     }
     groundTexture1 = SDL_CreateTextureFromSurface(renderer, groundSurface);
     groundTexture2 = SDL_CreateTextureFromSurface(renderer, groundSurface);
-
-
-//This line of code extracts the width of the loaded ground texture
- //using groundSurface->w and assigns it to the groundImageWidth variable.
-
-
     groundImageWidth = groundSurface->w;
     SDL_FreeSurface(groundSurface);
 
@@ -144,6 +181,9 @@ int main(int argc, char *args[]){
 		SDL_Quit();
         return 1;
     }
+    cactuses.push_back(Cactus(0, 800, groundSpeed)); // Small cactus, initially off-screen
+    cactuses.push_back(Cactus(1, 1200, groundSpeed)); // Big cactus, initially off-screen
+
 	
 	while(!quit){
 		
@@ -160,6 +200,10 @@ int main(int argc, char *args[]){
 		UpdateDino();
 		UpdateGround();
 		
+		for (size_t i = 0; i < cactuses.size(); ++i) {
+                cactuses[i].Update();
+
+        }
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
         
@@ -173,9 +217,16 @@ int main(int argc, char *args[]){
 		SDL_Rect dinoRect = { dinoX, dinoY, 44, 48 };
         SDL_RenderCopy(renderer, dinoTexture, NULL, &dinoRect);
         
+        for (size_t i = 0; i < cactuses.size(); ++i) {
+            cactuses[i].Render();
+            if (cactuses[i].GetHitbox().x + cactuses[i].GetHitbox().w < 0) {
+                cactuses[i] = Cactus(rand() % 2, SCREEN_WIDTH, groundSpeed);
+            }
+        }
+        
         SDL_RenderPresent(renderer);
         
-        SDL_Delay(5);
+        SDL_Delay(3);
 
 	}
 	SDL_Quit();

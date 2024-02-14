@@ -4,8 +4,10 @@ NAME = dino
 all:
 	g++ $(NAME).cpp -o $(NAME) $(FLAGS)
 	./$(NAME)
-
 	
-aula:
+a:
+	./aulaa
+
+c:
 	g++ aula.cpp -o aulaa $(FLAGS)
 	./aulaa

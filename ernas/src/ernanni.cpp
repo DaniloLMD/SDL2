@@ -33,16 +33,31 @@ void Ernanni::Update(){
     else if(movement == CORRENDO){
         rect.x += Xspeed;
 
-        if(animationCounter <= 25)
-            UpdateTexture(CORRENDO_1);
-        else if(animationCounter <= 50)
-            UpdateTexture(CORRENDO_2);
-        else if(animationCounter <= 75)
-            UpdateTexture(CORRENDO_3);
-        else if(animationCounter <= 100)
-            UpdateTexture(CORRENDO_4);
-        else if(animationCounter <= 125)
-            UpdateTexture(CORRENDO_5);
+        if(movementDirection == RIGHT){
+            if(animationCounter <= 25)
+                UpdateTexture(CORRENDO_1);
+            else if(animationCounter <= 50)
+                UpdateTexture(CORRENDO_2);
+            else if(animationCounter <= 75)
+                UpdateTexture(CORRENDO_3);
+            else if(animationCounter <= 100)
+                UpdateTexture(CORRENDO_4);
+            else if(animationCounter <= 125)
+                UpdateTexture(CORRENDO_5);
+        }
+
+        else if(movementDirection == LEFT){
+            if(animationCounter <= 25)
+                UpdateTexture(CORRENDO_1);
+            else if(animationCounter <= 50)
+                UpdateTexture(CORRENDO_2);
+            else if(animationCounter <= 75)
+                UpdateTexture(CORRENDO_3);
+            else if(animationCounter <= 100)
+                UpdateTexture(CORRENDO_4);
+            else if(animationCounter <= 125)
+                UpdateTexture(CORRENDO_5);
+        }
 
         animationCounter++;
         if(animationCounter > 125)
@@ -93,27 +108,47 @@ void Ernanni::UpdateTexture(int state)
 {
     this->state = state;
 
-    std::string spritePath = "sprites/ernanni_parado_1.png";
+    std::string spritePath;
     if(state == PARADO_1)
         spritePath = ERNANNI_PARADO_1_PATH;
     
     else if(state == PARADO_2)
         spritePath = ERNANNI_PARADO_2_PATH;
 
-    else if(state == CORRENDO_1)
-        spritePath = ERNANNI_CORRENDO_1_PATH;
+    else if(state == CORRENDO_1){
+        if(movementDirection == RIGHT)
+            spritePath = ERNANNI_CORRENDO_1_PATH;
+        else
+            spritePath = ERNANNI_CORRENDO_ESQUERDA_1_PATH;
+    }
 
-    else if(state == CORRENDO_2)
-        spritePath = ERNANNI_CORRENDO_2_PATH;
+    else if(state == CORRENDO_2){
+        if(movementDirection == RIGHT)
+            spritePath = ERNANNI_CORRENDO_2_PATH;
+        else
+            spritePath = ERNANNI_CORRENDO_ESQUERDA_2_PATH;
+    }
 
-    else if(state == CORRENDO_3)
-        spritePath = ERNANNI_CORRENDO_3_PATH;
+    else if(state == CORRENDO_3){
+        if(movementDirection == RIGHT)
+            spritePath = ERNANNI_CORRENDO_3_PATH;
+        else
+            spritePath = ERNANNI_CORRENDO_ESQUERDA_3_PATH;
+    }
     
-    else if(state == CORRENDO_4)
-        spritePath = ERNANNI_CORRENDO_4_PATH;
+    else if(state == CORRENDO_4){
+        if(movementDirection == RIGHT)
+            spritePath = ERNANNI_CORRENDO_4_PATH;
+        else
+            spritePath = ERNANNI_CORRENDO_ESQUERDA_4_PATH;
+    }
     
-    else if(state == CORRENDO_5)
-        spritePath = ERNANNI_CORRENDO_5_PATH;
+    else if(state == CORRENDO_5){
+        if(movementDirection == RIGHT)
+            spritePath = ERNANNI_CORRENDO_5_PATH;
+        else
+            spritePath = ERNANNI_CORRENDO_ESQUERDA_5_PATH;
+    }
     
     else if(state == PULANDO_1)
         spritePath = ERNANNI_PULANDO_1_PATH;
@@ -153,4 +188,14 @@ void Ernanni::Jump(){
         Yspeed = -JUMP_FORCE;
         isJumping = true;
     }
+}
+
+void Ernanni::changeMovementDirection(int direction){
+    if(direction != LEFT && direction != RIGHT){
+        std::cout << "ERROR in Ernanni::changeMovementDirection : invalid direction";
+        exit(EXIT_FAILURE);
+    }
+    if(movementDirection != direction) Xspeed = -Xspeed;
+    movementDirection = direction;
+
 }

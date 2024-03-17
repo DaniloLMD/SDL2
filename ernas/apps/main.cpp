@@ -72,18 +72,29 @@ int main(){
     Mangueira mangada = Mangueira(renderer, SCREEN_WIDTH/2);
     SDL_Event event;
 
-
     while(!quit){
         while(SDL_PollEvent(&event) != 0){
             if(event.type == SDL_QUIT){
                 quit = true;
             }
             else if(event.type == SDL_KEYDOWN){
-                if(event.key.keysym.sym == SDLK_RIGHT){
-                    if(ernas.GetMovement() == PARADO) ernas.UpdateMovement(CORRENDO);
+                if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d){
+                    if(ernas.GetMovement() == PARADO || ernas.GetMovementDirection() != RIGHT){
+                        ernas.changeMovementDirection(RIGHT);
+                        ernas.UpdateMovement(CORRENDO);
+                    }
                     else ernas.UpdateMovement(PARADO);
                 }
-                else if(event.key.keysym.sym == SDLK_UP){
+                else if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a){
+                    if(ernas.GetMovement() == PARADO || ernas.GetMovementDirection() != LEFT){
+                        ernas.changeMovementDirection(LEFT);
+                        ernas.UpdateMovement(CORRENDO);
+                    }
+                    else{
+                        ernas.UpdateMovement(PARADO);
+                    }   
+                }
+                else if(event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w){
                     ernas.Jump();
                 }
             }
@@ -96,21 +107,28 @@ int main(){
         ernas.Render();
         mangada.Render();
 
+        bool changedScreen = false;
         if(ernas.GetRect().x > SCREEN_WIDTH){
             ernas.Teleport(0, ernas.GetRect().y);
-            ernas.UpdateMovement(PARADO);
-
+            //ernas.UpdateMovement(PARADO);
+            changedScreen = true;
+        }
+        else if(ernas.GetRect().x + ernas.GetRect().w < 0){
+            ernas.Teleport(SCREEN_WIDTH, ernas.GetRect().y);
+            changedScreen = true;
+        }
+        if(changedScreen){
             int new_x = rand()%SCREEN_WIDTH;
             if(new_x < ERNANNI_WIDTH + 25) new_x = ERNANNI_WIDTH+25;  
             mangada.Teleport(new_x);
         }
 
-        if(checkColision(ernas.GetRect(), mangada.GetRect())){
+        /*if(checkColision(ernas.GetRect(), mangada.GetRect())){
             while(SDL_PollEvent(&event) == 0){
 
             }
-            resetGame(&ernas, &ground, &mangada);
-        }
+            //resetGame(&ernas, &ground, &mangada);
+        }*/
 
         SDL_RenderPresent(renderer);
         SDL_Delay(2);

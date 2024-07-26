@@ -4,8 +4,8 @@
 #include "includes.hpp"
 #include "coordenadas.hpp"
 
-const int ERNANNI_WIDTH = 80;
-const int ERNANNI_HEIGTH = 100;
+const int ERNANNI_WIDTH = 150;
+const int ERNANNI_HEIGTH = 200;
 
 
 const int NUM_STATES = 11; 
@@ -53,6 +53,8 @@ class Ernanni{
 
         void Jump();
 
+        int caindo;
+
     private:
         SDL_Texture* texture;
         SDL_Renderer* renderer;
@@ -93,3 +95,16 @@ std::string ERNANNI_PULANDO_3_PATH = SPRITES_FOLDER + "ernanni_pulando_3.png";
 std::string ERNANNI_PULANDO_4_PATH = SPRITES_FOLDER + "ernanni_pulando_4.png";
 
 #endif
+
+enum numeros{
+    ZERO = 7,
+    UM, //8
+    DOIS  //2
+};
+
+void print_num(int num){
+    if(num == ZERO) printf("0");
+    if(num == UM) printf("1");
+    if(num == DOIS) printf("2");
+
+}

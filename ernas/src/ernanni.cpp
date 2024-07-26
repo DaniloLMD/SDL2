@@ -9,6 +9,7 @@ Ernanni::Ernanni(SDL_Renderer* renderer, int x, int y, int Xspeed) : renderer(re
     rect = {x, y, ERNANNI_WIDTH, ERNANNI_HEIGTH};
     animationCounter = 1;
     movement = PARADO;
+    caindo = false;
 }
 
 void Ernanni::Teleport(int x, int y){
@@ -65,6 +66,11 @@ void Ernanni::Update(){
     }
 
     if(isJumping){
+        
+        /*if(this->caindo){
+            GRAVITY = GRAVITY2;
+        }
+        else GRAVITY = GRAVITY1;*/
 
         if(animationCounter <= 30)
             UpdateTexture(PULANDO_1);
@@ -83,12 +89,11 @@ void Ernanni::Update(){
             caindo = true;
         }
 
-
-
         if(!caindo) rect.y += (int) Yspeed;
         else{
             UpdateTexture(PULANDO_4);
-            rect.y += (int) Yspeed/4;
+            if(this->caindo) rect.y += (int) Yspeed * 10;
+            else rect.y += (int) Yspeed/4;
         }
 
         if(rect.y + rect.h > SCREEN_HEIGHT){
@@ -102,6 +107,7 @@ void Ernanni::Update(){
         }
 
     }
+    else this->caindo = false;
 }
 
 void Ernanni::UpdateTexture(int state)

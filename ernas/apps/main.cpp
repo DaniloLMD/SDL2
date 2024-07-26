@@ -3,6 +3,7 @@
 #include "../include/ground.hpp"
 #include "../include/mangueira.hpp"
 #include "../include/coordenadas.hpp"
+#include <iostream>
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -19,11 +20,6 @@ bool checkColision(SDL_Rect rect1, SDL_Rect rect2){
     if(rect1.y + rect1.h < rect2.y){
         return false;
     }
-
-    if(rect2.y + rect2.h < rect1.y){
-        return false;
-    }
-
     return true;
 }
 
@@ -96,6 +92,11 @@ int main(){
                 }
                 else if(event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w){
                     ernas.Jump();
+                }
+                else if(event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s){
+                    if(ernas.GetMovement() >= PULANDO && ernas.GetMovement() <= PULANDO_4){
+                        ernas.caindo = true;
+                    }
                 }
             }
         }

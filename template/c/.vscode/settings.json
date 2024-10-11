@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "unistd.h": "c",
+        "sdl_manager.h": "c"
+    }
+}

@@ -4,19 +4,23 @@ INCLUDE = ./include
 OBJ = ./obj
 SRC = ./src
 
-SDL_FLAGS = `sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
+GTK_FLAGS = `pkg-config --cflags --libs gtk+-3.0` -rdynamic
+SDL_FLAGS = `sdl2-config --cflags --libs` -lSDL2 -lSDL2_image
 MULTIPLE_FLAGS = "-Wl,--allow-multiple-definition"
+
+APP = main
 
 all: _src clean_apps _apps
 
-#colocar os .o aqui depois (ex: $(OBJ)/nave.o)
-_src: 
+_src: \
+		$(OBJ)/sdl_manager.o \
+		$(OBJ)/cor.o 
 
 clean_apps:
 	rm -rf $(BIN)/*
 
-_apps: $(BIN)/main
-	$(BIN)/main
+_apps: $(BIN)/$(APP)
+	$(BIN)/$(APP)
 
 clean:
 	rm $(OBJ)/*
@@ -27,6 +31,5 @@ $(OBJ)/%.o: $(SRC)/%.cpp $(INCLUDE)/%.hpp
 $(BIN)/%: $(APPS)/%.cpp
 	g++ $< $(OBJ)/*.o -I $(INCLUDE) -o $@ $(SDL_FLAGS) $(MULTIPLE_FLAGS)
 
-teste:
-	g++ t.cpp -o t $(SDL_FLAGS)
-	./t
+$(OBJ)/%.o: 
+	g++ -c $< -I $(INCLUDE) -o $@ $(SDL_FLAGS) $(MULTIPLE_FLAGS)

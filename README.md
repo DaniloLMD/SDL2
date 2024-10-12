@@ -1,5 +1,5 @@
 # SDL2
-Esse projeto foi desenvolvido com o intuito de divulgar e ensinar o báscico de SDL2, uma biblioteca para interface gráfica nas linguagens C/C++.
+Esse projeto foi desenvolvido com o intuito de divulgar e ensinar o básico de SDL2, uma biblioteca para interface gráfica nas linguagens C/C++.
 
 ## Tecnologias usadas
 

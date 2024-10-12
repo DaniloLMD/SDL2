@@ -11,7 +11,7 @@ bool InitializeSDL(SDL_Renderer** renderer_ref, SDL_Window** window_ref, int SCR
     SDL_Init(SDL_INIT_VIDEO);
 
     window = SDL_CreateWindow(
-        "SDL2 C Project", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        "SDL2 CPP Project", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN
     );
 

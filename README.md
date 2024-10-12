@@ -6,6 +6,7 @@ Esse projeto foi desenvolvido com o intuito de divulgar e ensinar o báscico de 
 <div align="center">
   <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=c,cmake,cpp&theme=dark" alt="Tecnologias usadas" />
+    <img src="sdl2.png" alt="Tecnologias usadas" />
   </a>
 </div>
 

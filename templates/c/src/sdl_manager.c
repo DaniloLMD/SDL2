@@ -40,7 +40,7 @@ bool InitializeSDL(){
 bool check_colision(SDL_Rect* a, SDL_Rect* b){
     if(!a || !b) return false;
 
-    if(a->x + a->w <= b->h){
+    if(a->x + a->w <= b->x){
         return false;
     }
     if(b->x + b->w <= a->x){

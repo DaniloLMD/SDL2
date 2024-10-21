@@ -1,4 +1,4 @@
-#include "../include/sdl_manager.hpp"
+#include "../include/sdl_manager.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -11,7 +11,7 @@ bool InitializeSDL(){
     SDL_Init(SDL_INIT_VIDEO);
 
     window = SDL_CreateWindow(
-        "SDL2 CPP Project", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        "Jogo da Velha", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN
     );
 

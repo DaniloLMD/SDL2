@@ -57,7 +57,7 @@ bool InitializeSDL(){
 
     //inicializando a janela
     window = SDL_CreateWindow(
-        "Pau's Hanoi", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        "Hanoi", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN
     );
 
@@ -87,7 +87,7 @@ int main(int argc, char* argv[]){
     int largura_pau = 75, altura_pau = 500;
     int distancia_paus = 325;
     vector<SDL_Rect> paus;
-    paus.push_back({base.x + 100, base.y - altura_pau, largura_pau, altura_pau});
+    paus.push_back({base.x + 150, base.y - altura_pau, largura_pau, altura_pau});
     paus.push_back({paus[0].x + distancia_paus, base.y - altura_pau , largura_pau, altura_pau});
     paus.push_back({paus[1].x + distancia_paus, base.y - altura_pau , largura_pau, altura_pau});
 
@@ -97,7 +97,7 @@ int main(int argc, char* argv[]){
     vector<int> largura_discos(qtd_discos);
     int altura_discos = 100;
     for(int i = 0; i < qtd_discos; i++){
-        largura_discos[i] = largura_pau + 25 + 50 * i;
+        largura_discos[i] = largura_pau + 25 + 50 * (qtd_discos - 1 -i);
         discos[i] = {paus[0].x - (largura_discos[i] - largura_pau) / 2, paus[0].y + paus[0].h - altura_discos*(i+1), largura_discos[i], altura_discos};
     }
 
@@ -126,9 +126,8 @@ int main(int argc, char* argv[]){
         }
         cores[i] = c;
     }
+
     while(!quit){ //loop for game loop
-
-
 
         while(SDL_PollEvent(&event) != 0){ //loop que consome todos os eventos
             if(event.type == SDL_QUIT){
@@ -144,13 +143,12 @@ int main(int argc, char* argv[]){
 
         for(int i = 0; i < qtd_discos; i++){
             colorirRect(&discos[i], cores[i]);
-            cout << i << "\n";
         }
 
 
         SDL_RenderPresent(renderer);
 
-        SDL_Delay(400);
+        SDL_Delay(5);
     }
 
     SDL_Quit();

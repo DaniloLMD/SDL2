@@ -2,7 +2,7 @@
 #include "../include/cor.h"
 #include "../include/board.h"
 
-int main(int argc, char* argv[]){
+int main(){
 
 
     if(!InitializeSDL()){
@@ -31,6 +31,8 @@ int main(int argc, char* argv[]){
     }
 
     SDL_Quit();
+
+
 
     return 0;
 }

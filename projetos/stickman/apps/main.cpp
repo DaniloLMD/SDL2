@@ -77,14 +77,14 @@ int main(){
                 if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d){
                     if(ernas.GetMovement() == PARADO || ernas.GetMovementDirection() != RIGHT){
                         ernas.changeMovementDirection(RIGHT);
-                        ernas.UpdateMovement(CORRENDO);
+                        ernas.UpdateMovement(CORRENDO_RIGHT);
                     }
                     else ernas.UpdateMovement(PARADO);
                 }
                 else if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a){
                     if(ernas.GetMovement() == PARADO || ernas.GetMovementDirection() != LEFT){
                         ernas.changeMovementDirection(LEFT);
-                        ernas.UpdateMovement(CORRENDO);
+                        ernas.UpdateMovement(CORRENDO_LEFT);
                     }
                     else{
                         ernas.UpdateMovement(PARADO);
@@ -111,7 +111,6 @@ int main(){
         bool changedScreen = false;
         if(ernas.GetRect().x > SCREEN_WIDTH){
             ernas.Teleport(0, ernas.GetRect().y);
-            //ernas.UpdateMovement(PARADO);
             changedScreen = true;
         }
         else if(ernas.GetRect().x + ernas.GetRect().w < 0){
@@ -124,15 +123,15 @@ int main(){
             mangada.Teleport(new_x);
         }
 
-        /*if(checkColision(ernas.GetRect(), mangada.GetRect())){
-            while(SDL_PollEvent(&event) == 0){
+        // if(checkColision(ernas.GetRect(), mangada.GetRect())){
+        //     while(SDL_PollEvent(&event) == 0){
 
-            }
-            //resetGame(&ernas, &ground, &mangada);
-        }*/
+        //     }
+        //     resetGame(&ernas, &ground, &mangada);
+        // }
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(2);
+        SDL_Delay(3);
     }
 
     SDL_Quit();

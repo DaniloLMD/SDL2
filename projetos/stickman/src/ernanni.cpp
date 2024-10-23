@@ -4,12 +4,16 @@
 
 Ernanni::Ernanni(SDL_Renderer* renderer, int x, int y, int Xspeed) : renderer(renderer), Xspeed(Xspeed)
 {
-    UpdateTexture(PARADO_1);
-    
+    state = PARADO_1;
     rect = {x, y, ERNANNI_WIDTH, ERNANNI_HEIGTH};
     animationCounter = 1;
     movement = PARADO;
     caindo = false;
+
+    for(int i = 0; i < END_ANIMATION_STATE; i++){
+        textures[i] = LoadTexture(i);
+    }
+
 }
 
 void Ernanni::Teleport(int x, int y){
@@ -21,9 +25,9 @@ void Ernanni::Update(){
 
     if(movement == PARADO){ 
         if(animationCounter <= 50)
-            UpdateTexture(PARADO_1);
+            state = PARADO_1;
         else if(animationCounter <= 100)
-            UpdateTexture(PARADO_2);
+            state = PARADO_2;
 
         animationCounter++;
         if(animationCounter > 100)
@@ -31,53 +35,58 @@ void Ernanni::Update(){
     }
 
 
-    else if(movement == CORRENDO){
+    else if(movement == CORRENDO_RIGHT){
         rect.x += Xspeed;
 
-        if(movementDirection == RIGHT){
             if(animationCounter <= 25)
-                UpdateTexture(CORRENDO_1);
+                state = CORRENDO_1_RIGHT;
             else if(animationCounter <= 50)
-                UpdateTexture(CORRENDO_2);
+                state = CORRENDO_2_RIGHT;
             else if(animationCounter <= 75)
-                UpdateTexture(CORRENDO_3);
+                state = CORRENDO_3_RIGHT;
             else if(animationCounter <= 100)
-                UpdateTexture(CORRENDO_4);
+                state = CORRENDO_4_RIGHT;
             else if(animationCounter <= 125)
-                UpdateTexture(CORRENDO_5);
-        }
-
-        else if(movementDirection == LEFT){
-            if(animationCounter <= 25)
-                UpdateTexture(CORRENDO_1);
-            else if(animationCounter <= 50)
-                UpdateTexture(CORRENDO_2);
-            else if(animationCounter <= 75)
-                UpdateTexture(CORRENDO_3);
-            else if(animationCounter <= 100)
-                UpdateTexture(CORRENDO_4);
-            else if(animationCounter <= 125)
-                UpdateTexture(CORRENDO_5);
-        }
+                state = CORRENDO_5_RIGHT;
 
         animationCounter++;
         if(animationCounter > 125)
             animationCounter = 1;
     }
 
+    else if(movement == CORRENDO_LEFT){
+        rect.x += Xspeed;
+
+        if(animationCounter <= 25)
+            state = CORRENDO_1_LEFT;
+        else if(animationCounter <= 50)
+            state = CORRENDO_2_LEFT;
+        else if(animationCounter <= 75)
+            state = CORRENDO_3_LEFT;
+        else if(animationCounter <= 100)
+            state = CORRENDO_4_LEFT;
+        else if(animationCounter <= 125)
+            state = CORRENDO_5_LEFT;
+
+        animationCounter++;
+        if(animationCounter > 125)
+            animationCounter = 1;
+    }
+
+
     if(isJumping){
         
-        /*if(this->caindo){
+        if(this->caindo){
             GRAVITY = GRAVITY2;
         }
-        else GRAVITY = GRAVITY1;*/
+        else GRAVITY = GRAVITY1;
 
         if(animationCounter <= 30)
-            UpdateTexture(PULANDO_1);
+            state = PULANDO_1;
         else if(animationCounter <= 60)
-            UpdateTexture(PULANDO_2);
+            state = PULANDO_2;
         else if(animationCounter <= 90)
-            UpdateTexture(PULANDO_3);
+            state = PULANDO_3;
         
         animationCounter++;
         if(animationCounter > 90)
@@ -91,7 +100,7 @@ void Ernanni::Update(){
 
         if(!caindo) rect.y += (int) Yspeed;
         else{
-            UpdateTexture(PULANDO_4);
+            state = PULANDO_4;
             if(this->caindo) rect.y += (int) Yspeed * 10;
             else rect.y += (int) Yspeed/4;
         }
@@ -102,18 +111,13 @@ void Ernanni::Update(){
             isJumping = false;
             animationCounter = 1;
         }
-        if(movement == CORRENDO){
-            rect.x += Xspeed;
-        }
 
     }
     else this->caindo = false;
 }
 
-void Ernanni::UpdateTexture(int state)
+SDL_Texture* Ernanni::LoadTexture(int state)
 {
-    this->state = state;
-
     std::string spritePath;
     if(state == PARADO_1)
         spritePath = ERNANNI_PARADO_1_PATH;
@@ -121,40 +125,43 @@ void Ernanni::UpdateTexture(int state)
     else if(state == PARADO_2)
         spritePath = ERNANNI_PARADO_2_PATH;
 
-    else if(state == CORRENDO_1){
-        if(movementDirection == RIGHT)
-            spritePath = ERNANNI_CORRENDO_1_PATH;
-        else
-            spritePath = ERNANNI_CORRENDO_ESQUERDA_1_PATH;
+
+
+    else if(state == CORRENDO_1_RIGHT){
+        spritePath = ERNANNI_CORRENDO_1_PATH;
+    }
+    else if(state == CORRENDO_1_LEFT){
+        spritePath = ERNANNI_CORRENDO_ESQUERDA_1_PATH;
     }
 
-    else if(state == CORRENDO_2){
-        if(movementDirection == RIGHT)
-            spritePath = ERNANNI_CORRENDO_2_PATH;
-        else
-            spritePath = ERNANNI_CORRENDO_ESQUERDA_2_PATH;
+    else if(state == CORRENDO_2_RIGHT){
+        spritePath = ERNANNI_CORRENDO_2_PATH;
+    }
+    else if(state == CORRENDO_2_LEFT){
+        spritePath = ERNANNI_CORRENDO_ESQUERDA_2_PATH;
     }
 
-    else if(state == CORRENDO_3){
-        if(movementDirection == RIGHT)
-            spritePath = ERNANNI_CORRENDO_3_PATH;
-        else
-            spritePath = ERNANNI_CORRENDO_ESQUERDA_3_PATH;
+    else if(state == CORRENDO_3_RIGHT){
+        spritePath = ERNANNI_CORRENDO_3_PATH;
     }
-    
-    else if(state == CORRENDO_4){
-        if(movementDirection == RIGHT)
-            spritePath = ERNANNI_CORRENDO_4_PATH;
-        else
-            spritePath = ERNANNI_CORRENDO_ESQUERDA_4_PATH;
+    else if(state == CORRENDO_3_LEFT){
+        spritePath = ERNANNI_CORRENDO_ESQUERDA_3_PATH;
     }
-    
-    else if(state == CORRENDO_5){
-        if(movementDirection == RIGHT)
-            spritePath = ERNANNI_CORRENDO_5_PATH;
-        else
-            spritePath = ERNANNI_CORRENDO_ESQUERDA_5_PATH;
+
+    else if(state == CORRENDO_4_RIGHT){
+        spritePath = ERNANNI_CORRENDO_4_PATH;
     }
+    else if(state == CORRENDO_4_LEFT){
+        spritePath = ERNANNI_CORRENDO_ESQUERDA_4_PATH;
+    }
+
+    else if(state == CORRENDO_5_RIGHT){
+        spritePath = ERNANNI_CORRENDO_5_PATH;
+    }
+    else if(state == CORRENDO_5_LEFT){
+        spritePath = ERNANNI_CORRENDO_ESQUERDA_5_PATH;
+    }
+
     
     else if(state == PULANDO_1)
         spritePath = ERNANNI_PULANDO_1_PATH;
@@ -174,12 +181,13 @@ void Ernanni::UpdateTexture(int state)
     }
 
     SDL_Surface* surface = IMG_Load(spritePath.c_str());
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
+    return texture;
 }
 
 void Ernanni::Render(){
-    SDL_RenderCopy(renderer, texture, NULL, &rect);
+    SDL_RenderCopy(renderer, textures[state], NULL, &rect);
 }
 
 void Ernanni::UpdateMovement(int movement)

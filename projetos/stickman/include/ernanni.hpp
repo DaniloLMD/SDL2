@@ -7,25 +7,32 @@
 const int ERNANNI_WIDTH = 150;
 const int ERNANNI_HEIGTH = 200;
 
-
 const int NUM_STATES = 11; 
 enum ernanniAnimationState{
-  PARADO_1, 
+  PARADO_1 = 0, 
   PARADO_2,
-  CORRENDO_1,
-  CORRENDO_2,
-  CORRENDO_3,
-  CORRENDO_4,
-  CORRENDO_5,
+  CORRENDO_1_RIGHT,
+  CORRENDO_2_RIGHT,
+  CORRENDO_3_RIGHT,
+  CORRENDO_4_RIGHT,
+  CORRENDO_5_RIGHT,
+  CORRENDO_1_LEFT,
+  CORRENDO_2_LEFT,
+  CORRENDO_3_LEFT,
+  CORRENDO_4_LEFT,
+  CORRENDO_5_LEFT,
   PULANDO_1,
   PULANDO_2,
   PULANDO_3,
-  PULANDO_4
+  PULANDO_4,
+  END_ANIMATION_STATE
 };
+
 
 enum ernanniAction{
     PARADO,
-    CORRENDO,
+    CORRENDO_RIGHT,
+    CORRENDO_LEFT,
     PULANDO
 };
 
@@ -40,7 +47,6 @@ class Ernanni{
 
         void Update();
         void Render();
-        void UpdateTexture(int state);
         void UpdateMovement(int movement);
 
         void Teleport(int x, int y);
@@ -56,9 +62,10 @@ class Ernanni{
         int caindo;
 
     private:
-        SDL_Texture* texture;
+        SDL_Texture* textures[END_ANIMATION_STATE];
         SDL_Renderer* renderer;
         SDL_Rect rect;
+        SDL_Texture* LoadTexture(int state);
         int movement;
         bool isJumping;
         int state;
@@ -95,16 +102,3 @@ std::string ERNANNI_PULANDO_3_PATH = SPRITES_FOLDER + "ernanni_pulando_3.png";
 std::string ERNANNI_PULANDO_4_PATH = SPRITES_FOLDER + "ernanni_pulando_4.png";
 
 #endif
-
-enum numeros{
-    ZERO = 7,
-    UM, //8
-    DOIS  //2
-};
-
-void print_num(int num){
-    if(num == ZERO) printf("0");
-    if(num == UM) printf("1");
-    if(num == DOIS) printf("2");
-
-}

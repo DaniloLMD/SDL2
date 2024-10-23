@@ -13,7 +13,7 @@ all: _src clean_apps _apps
 
 _src: \
 		$(OBJ)/sdl_manager.o \
-		$(OBJ)/cor.o 
+		$(OBJ)/cor.o \
 
 clean_apps:
 	rm -rf $(BIN)/*

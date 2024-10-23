@@ -8,12 +8,14 @@ typedef struct cor{
 
 } Cor;
 
+Cor vermelho = {255, 0, 0, 255};
+Cor verde = {115, 168, 50, 255};
+Cor azul = {0, 0, 255, 0};
 Cor marrom = {168, 123, 50, 255};
 Cor cinza = {203, 212, 201, 255};
-Cor verde = {115, 168, 50, 255};
-Cor vermelho = {255, 0, 0, 255};
 Cor branco = {255, 255, 255};
 Cor preto = {0, 0, 0};
+
 
 Cor randomColor();
 

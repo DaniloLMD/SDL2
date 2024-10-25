@@ -10,7 +10,7 @@
 
 SDL_Window* window = NULL; //janela principal do programa
 
-SDL_Renderer* renderer = NULL;
+SDL_Renderer* renderer = NULL;  
 
 SDL_Event event;
 

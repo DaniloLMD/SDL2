@@ -123,12 +123,12 @@ int main(){
             mangada.Teleport(new_x);
         }
 
-        // if(checkColision(ernas.GetRect(), mangada.GetRect())){
-        //     while(SDL_PollEvent(&event) == 0){
+        if(checkColision(ernas.GetRect(), mangada.GetRect())){
+            while(SDL_PollEvent(&event) == 0){
 
-        //     }
-        //     resetGame(&ernas, &ground, &mangada);
-        // }
+            }
+            resetGame(&ernas, &ground, &mangada);
+        }
 
         SDL_RenderPresent(renderer);
         SDL_Delay(3);
